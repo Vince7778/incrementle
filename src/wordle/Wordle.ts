@@ -15,6 +15,9 @@ export class Wordle {
     correctWord: string;
     guesses: string[];
     guessColors: GuessColor[][];
+
+    tentativeGuess: string;
+
     maxGuessCount: number;
     guessLength: number;
 
@@ -22,6 +25,8 @@ export class Wordle {
         this.correctWord = getRandomAnswer();
         this.guesses = [getRandomWord()];
         this.guessColors = [checkGuess(this.guesses[0], this.correctWord)];
+
+        this.tentativeGuess = "abc";
 
         this.maxGuessCount = maxGuessCount || defaultGuessCount;
         this.guessLength = guessLength || defaultGuessLength;
@@ -45,6 +50,19 @@ export class Wordle {
 
                     row.appendChild(letter);
                 }
+            } else if (i === this.guesses.length && this.tentativeGuess.length > 0) {
+                for (let j = 0; j < this.guessLength; j++) {
+                    const letter = document.createElement("div");
+
+                    if (j < this.tentativeGuess.length) {
+                        letter.innerText = this.tentativeGuess[j];
+                        letter.className = `board-letter letter-${GuessColor.Blank}`;
+                    } else {
+                        letter.className = `board-letter letter-${GuessColor.Empty}`
+                    }
+
+                    row.appendChild(letter);
+                }
             } else {
                 // not yet guessed
                 for (let j = 0; j < this.guessLength; j++) {
@@ -53,7 +71,6 @@ export class Wordle {
                     row.appendChild(letter);
                 }
             }
-            
 
             board.appendChild(row);
         }

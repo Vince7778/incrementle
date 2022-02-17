@@ -48,3 +48,7 @@ body {
 .letter-gray {
     background-color: #686868;
 }
+
+.letter-blank {
+    background-color: #111111;
+}
