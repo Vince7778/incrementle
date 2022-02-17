@@ -135,7 +135,7 @@ export class Wordle {
     }
 
     type(key: string) {
-        if (this.guesses.length >= this.maxGuessCount && key !== "Enter") return;
+        if (this.gameOutcome && key !== "Enter") return;
 
         switch(key) {
             case "Enter":
