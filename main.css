@@ -15,6 +15,12 @@ body {
     gap: 5px;
 }
 
+.board-status {
+    text-align: center;
+    margin-top: 0px;
+    font-size: 1.5rem;
+}
+
 .board-row {
     display: grid;
     /* Doesn't allow for other numbers of columns */

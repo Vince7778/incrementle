@@ -14,29 +14,39 @@ interface WordleOptions {
     maxGuessCount?: number;
 }
 
+type GameOutcome = null | "win" | "loss";
+
 export class Wordle {
     parentElem?: HTMLElement;
+    statusBar: HTMLParagraphElement = document.createElement("p");
 
-    correctWord: string;
-    guesses: string[];
-    guessColors: GuessColor[][];
+    correctWord: string = ""; // will get set when constructed
+    guesses: string[] = [];
+    guessColors: GuessColor[][] = [];
+    gameOutcome: GameOutcome = null;
 
-    tentativeGuess: string;
+    tentativeGuess: string = "";
 
     maxGuessCount: number;
     guessLength: number;
 
     constructor({parentElem, guessLength, maxGuessCount}: WordleOptions = {}) {
+        this.maxGuessCount = maxGuessCount || defaultGuessCount;
+        this.guessLength = guessLength || defaultGuessLength;
+        this.parentElem = parentElem;
+        this.statusBar.className = "board-status";
+        this.resetGame();
+    }
+
+    resetGame() {
         this.correctWord = getRandomAnswer();
         this.guesses = [];
         this.guessColors = [];
+        this.gameOutcome = null;
 
         this.tentativeGuess = "";
 
-        this.maxGuessCount = maxGuessCount || defaultGuessCount;
-        this.guessLength = guessLength || defaultGuessLength;
-
-        this.parentElem = parentElem;
+        this.setStatus("");
         this.display();
     }
 
@@ -84,20 +94,48 @@ export class Wordle {
             board.appendChild(row);
         }
 
+        board.appendChild(this.statusBar);
+
         this.parentElem.replaceChildren(board);
     }
 
+    setStatus(str: string) {
+        if (!str) {
+            this.statusBar.style.display = "none";
+        } else {
+            this.statusBar.style.display = "block";
+        }
+        this.statusBar.innerText = str;
+    }
+
     submitWord() {
+        if (this.gameOutcome) {
+            this.resetGame();
+        }
+
         if (this.tentativeGuess.length < this.guessLength) return;
-        if (!isValidWord(this.tentativeGuess)) return;
+        if (!isValidWord(this.tentativeGuess)) {
+            this.setStatus("Invalid word");
+            return;
+        }
         this.guesses.push(this.tentativeGuess);
         this.guessColors.push(checkGuess(this.tentativeGuess, this.correctWord));
+
+        if (this.tentativeGuess === this.correctWord) {
+            this.gameOutcome = "win";
+            this.setStatus("You won!");
+        } else if (this.guesses.length === this.maxGuessCount) {
+            this.gameOutcome = "loss";
+            this.setStatus(`You lost! Answer: ${this.correctWord}`);
+        }
+
         this.tentativeGuess = "";
+
         this.display();
     }
 
     type(key: string) {
-        if (this.guesses.length >= this.maxGuessCount) return;
+        if (this.guesses.length >= this.maxGuessCount && key !== "Enter") return;
 
         switch(key) {
             case "Enter":
@@ -106,6 +144,7 @@ export class Wordle {
             case "Backspace":
                 if (this.tentativeGuess.length > 0) {
                     this.tentativeGuess = this.tentativeGuess.slice(0, -1);
+                    this.setStatus(""); // remove 'Invalid word' message
                     this.display();
                 }
                 break;
