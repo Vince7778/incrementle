@@ -1,17 +1,22 @@
 
 import { checkGuess } from "./checkGuess";
-import { getRandomAnswer, getRandomWord } from "./getRandomWord";
+import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 
 const defaultGuessCount = 6;
 const defaultGuessLength = 5;
 
+const isLetter = (s: string) => /[a-zA-Z]/.test(s);
+
 interface WordleOptions {
+    parentElem?: HTMLElement;
     guessLength?: number;
     maxGuessCount?: number;
 }
 
 export class Wordle {
+    parentElem?: HTMLElement;
+
     correctWord: string;
     guesses: string[];
     guessColors: GuessColor[][];
@@ -21,18 +26,22 @@ export class Wordle {
     maxGuessCount: number;
     guessLength: number;
 
-    constructor({guessLength, maxGuessCount}: WordleOptions = {}) {
+    constructor({parentElem, guessLength, maxGuessCount}: WordleOptions = {}) {
         this.correctWord = getRandomAnswer();
-        this.guesses = [getRandomWord()];
-        this.guessColors = [checkGuess(this.guesses[0], this.correctWord)];
+        this.guesses = [];
+        this.guessColors = [];
 
-        this.tentativeGuess = "abc";
+        this.tentativeGuess = "";
 
         this.maxGuessCount = maxGuessCount || defaultGuessCount;
         this.guessLength = guessLength || defaultGuessLength;
+
+        this.parentElem = parentElem;
+        this.display();
     }
 
-    display(el: HTMLElement) {
+    display() {
+        if (!this.parentElem) return;
         const board = document.createElement("div");
         board.className = "board";
 
@@ -75,6 +84,37 @@ export class Wordle {
             board.appendChild(row);
         }
 
-        el.appendChild(board);
+        this.parentElem.replaceChildren(board);
+    }
+
+    submitWord() {
+        if (this.tentativeGuess.length < this.guessLength) return;
+        if (!isValidWord(this.tentativeGuess)) return;
+        this.guesses.push(this.tentativeGuess);
+        this.guessColors.push(checkGuess(this.tentativeGuess, this.correctWord));
+        this.tentativeGuess = "";
+        this.display();
+    }
+
+    type(key: string) {
+        if (this.guesses.length >= this.maxGuessCount) return;
+
+        switch(key) {
+            case "Enter":
+                this.submitWord();
+                break;
+            case "Backspace":
+                if (this.tentativeGuess.length > 0) {
+                    this.tentativeGuess = this.tentativeGuess.slice(0, -1);
+                    this.display();
+                }
+                break;
+            default:
+                if (isLetter(key) && this.tentativeGuess.length < this.guessLength) {
+                    this.tentativeGuess += key.toLowerCase();
+                    this.display();
+                }
+                break;
+        }
     }
 }

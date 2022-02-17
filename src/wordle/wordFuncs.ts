@@ -17,3 +17,7 @@ export function getRandomAnswer() {
     const index = Math.floor(Math.random()*answerList.length);
     return answerList[index];
 }
+
+export function isValidWord(w: string) {
+    return answerList.indexOf(w) >= 0 || wordList.indexOf(w) >= 0;
+}
