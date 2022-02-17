@@ -1,0 +1,18 @@
+{
+    "name": "incrementle",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build:esbuild": "npx esbuild src/Game.ts --bundle --minify --sourcemap --target=\"chrome58,firefox57,safari11,edge29\" --outfile=\"./dist/out.js\"",
+        "watch:esbuild": "npx esbuild src/Game.ts --bundle --minify --sourcemap --target=\"chrome58,firefox57,safari11,edge29\" --outfile=\"./dist/out.js\" --watch",
+        "check:tsc": "npx -p typescript tsc",
+        "watch:tsc": "npx -p typescript tsc --watch"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "esbuild": "^0.14.22",
+        "typescript": "^4.5.5"
+    }
+}
