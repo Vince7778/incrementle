@@ -2,4 +2,5 @@
 import { Wordle } from "./wordle/Wordle";
 
 const curWordle = new Wordle();
-console.log(curWordle.correctWord);
+
+curWordle.display(document.getElementById("main-board")!);

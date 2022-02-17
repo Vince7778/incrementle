@@ -3,3 +3,48 @@ body {
     color: white;
     font-family: sans-serif;
 }
+
+.board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    display: grid;
+    gap: 5px;
+}
+
+.board-row {
+    display: grid;
+    /* Doesn't allow for other numbers of columns */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.board-letter {
+    display: inline-flex;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    line-height: 2rem;
+    vertical-align: middle;
+    border: 2px solid rgba(255, 255, 255, .3)
+}
+
+.letter-green {
+    background-color: #4ca136;
+}
+
+.letter-yellow {
+    background-color: #b4b435;
+}
+
+.letter-gray {
+    background-color: #686868;
+}
