@@ -6,12 +6,13 @@ import { GuessColor } from "./GuessColor";
 const defaultGuessCount = 6;
 const defaultGuessLength = 5;
 
-const isLetter = (s: string) => /[a-zA-Z]/.test(s);
+const isLetter = (s: string) => /^[a-zA-Z]$/.test(s);
 
 interface WordleOptions {
     parentElem?: HTMLElement;
     guessLength?: number;
     maxGuessCount?: number;
+    finishCallback?: (wrd: Wordle) => void;
 }
 
 type GameOutcome = null | "win" | "loss";
@@ -30,10 +31,13 @@ export class Wordle {
     maxGuessCount: number;
     guessLength: number;
 
-    constructor({parentElem, guessLength, maxGuessCount}: WordleOptions = {}) {
+    finishCallback?: (wrd: Wordle) => void;
+
+    constructor({parentElem, guessLength, maxGuessCount, finishCallback}: WordleOptions = {}) {
         this.maxGuessCount = maxGuessCount || defaultGuessCount;
         this.guessLength = guessLength || defaultGuessLength;
         this.parentElem = parentElem;
+        this.finishCallback = finishCallback;
         this.statusBar.className = "board-status";
         this.resetGame();
     }
@@ -108,6 +112,18 @@ export class Wordle {
         this.statusBar.innerText = str;
     }
 
+    checkEndGame() {
+        if (this.tentativeGuess === this.correctWord) {
+            this.gameOutcome = "win";
+            this.setStatus("You won!");
+            if (this.finishCallback) this.finishCallback(this);
+        } else if (this.guesses.length === this.maxGuessCount) {
+            this.gameOutcome = "loss";
+            this.setStatus(`You lost! Answer: ${this.correctWord}`);
+            if (this.finishCallback) this.finishCallback(this);
+        }
+    }
+
     submitWord() {
         if (this.gameOutcome) {
             this.resetGame();
@@ -121,13 +137,7 @@ export class Wordle {
         this.guesses.push(this.tentativeGuess);
         this.guessColors.push(checkGuess(this.tentativeGuess, this.correctWord));
 
-        if (this.tentativeGuess === this.correctWord) {
-            this.gameOutcome = "win";
-            this.setStatus("You won!");
-        } else if (this.guesses.length === this.maxGuessCount) {
-            this.gameOutcome = "loss";
-            this.setStatus(`You lost! Answer: ${this.correctWord}`);
-        }
+        this.checkEndGame();
 
         this.tentativeGuess = "";
 
@@ -155,5 +165,12 @@ export class Wordle {
                 }
                 break;
         }
+    }
+
+    // Returns the number of letters that are colored color
+    countColor(color: GuessColor) {
+        return this.guessColors.reduce((v: number, cur: GuessColor[]) => {
+            return v+cur.filter(c => c === color).length;
+        }, 0);
     }
 }
