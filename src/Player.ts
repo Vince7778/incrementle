@@ -3,13 +3,13 @@ import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
 
+const pointValues = [0, 13, 8, 5, 3, 2, 1]; // based off fibonacci sequence
+
 export class Player {
     gamesWon: number = 0;
     gamesPlayed: number = 0;
     currency = {
-        green: 0,
-        yellow: 0,
-        gray: 0
+        points: 0
     }
 
     constructor() {}
@@ -20,9 +20,7 @@ export class Player {
 
         const spans = [
             colorText(`Wins: ${this.gamesWon}`, "white"),
-            colorVarText(`Green: ${this.currency.green}`, "--letter-green-light"),
-            colorVarText(`Yellow: ${this.currency.yellow}`, "--letter-yellow-light"),
-            colorVarText(`Gray: ${this.currency.gray}`, "--letter-gray-light")
+            colorVarText(`Points: ${this.currency.points}`, "--letter-green-light")
         ];
         div.replaceChildren(...spans);
 
@@ -40,9 +38,7 @@ export class Player {
             }
 
             this.gamesWon++;
-            this.currency.green += wrd.countColor(GuessColor.Green);
-            this.currency.yellow += wrd.countColor(GuessColor.Yellow);
-            this.currency.gray += wrd.countColor(GuessColor.Gray);
+            this.currency.points += pointValues[wrd.guesses.length];
             
             this.displayCurrency();
         }

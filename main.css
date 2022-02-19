@@ -39,10 +39,11 @@ html {
 }
 
 #left-header {
-    display: block;
     width: 100%;
     padding: 5px;
     border-bottom: 2px solid var(--border-transparent);
+    font-size: 2rem;
+    align-self: flex-start;
 }
 
 .spaced-text {
