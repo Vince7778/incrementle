@@ -81,6 +81,7 @@ html {
     /* Doesn't allow for other numbers of columns */
     grid-template-columns: repeat(5, 1fr);
     gap: 5px;
+    margin: 0 40px;
 }
 
 .board-letter {
@@ -112,4 +113,32 @@ html {
 
 .letter-blank {
     background-color: #222222;
+}
+
+.kb-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.kb-row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+}
+
+.kb-letter {
+    width: 100%;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin: 3px;
+    padding: 3px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.kb-spacer {
+    visibility: none;
+    flex: 0.5;
 }

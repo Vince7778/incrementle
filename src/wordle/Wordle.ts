@@ -2,6 +2,7 @@
 import { checkGuess } from "./checkGuess";
 import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
+import { Keyboard } from "./Keyboard";
 
 const defaultGuessCount = 6;
 const defaultGuessLength = 5;
@@ -19,9 +20,10 @@ type GameOutcome = null | "win" | "loss";
 
 export class Wordle {
     parentElem?: HTMLElement;
-    statusBar: HTMLParagraphElement = document.createElement("p");
+    statusBar = document.createElement("p");
+    keyboard = new Keyboard();
 
-    correctWord: string = ""; // will get set when constructed
+    correctWord = ""; // will get set when constructed
     guesses: string[] = [];
     guessColors: GuessColor[][] = [];
     gameOutcome: GameOutcome = null;
@@ -51,6 +53,7 @@ export class Wordle {
         this.tentativeGuess = "";
 
         this.setStatus("");
+        this.keyboard.reset();
         this.display();
     }
 
@@ -100,6 +103,11 @@ export class Wordle {
 
         board.appendChild(this.statusBar);
 
+        const kbDisplay = document.createElement("div");
+        kbDisplay.className = "kb-container"
+        this.keyboard.display(kbDisplay);
+        board.appendChild(kbDisplay);
+
         this.parentElem.replaceChildren(board);
     }
 
@@ -135,7 +143,12 @@ export class Wordle {
             return;
         }
         this.guesses.push(this.tentativeGuess);
-        this.guessColors.push(checkGuess(this.tentativeGuess, this.correctWord));
+
+        const newColors = checkGuess(this.tentativeGuess, this.correctWord);
+        this.guessColors.push(newColors);
+        for (let i = 0; i < this.tentativeGuess.length; i++) {
+            this.keyboard.setKey(this.tentativeGuess[i], newColors[i]);
+        }
 
         this.checkEndGame();
 
