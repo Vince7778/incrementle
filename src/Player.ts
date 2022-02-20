@@ -3,6 +3,7 @@ import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
 import { Wallet } from "./Wallet";
+import { UpgradeManager } from "./upgrades/UpgradeManager";
 
 const pointValues = [0, 13, 8, 5, 3, 2, 1]; // based off fibonacci sequence
 
@@ -34,6 +35,7 @@ export class Player {
         if (wrd.gameOutcome === "win") {
             if (this.gamesWon === 0) {
                 LeftPanel.show();
+                UpgradeManager.display();
             }
 
             this.gamesWon++;

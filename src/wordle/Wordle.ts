@@ -4,7 +4,7 @@ import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
 
-const defaultGuessCount = 6;
+const defaultGuessCount = 4;
 const defaultGuessLength = 5;
 
 const isLetter = (s: string) => /^[a-zA-Z]$/.test(s);
@@ -47,6 +47,7 @@ export class Wordle {
 
     resetGame() {
         this.correctWord = getRandomAnswer();
+        console.log(this.correctWord);
         this.guesses = [];
         this.guessColors = [];
         this.gameOutcome = null;

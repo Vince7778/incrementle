@@ -40,6 +40,7 @@ button {
     top: 0;
     bottom: 0;
     overflow-y: auto;
+    flex-direction: column;
 }
 
 #left-header {
@@ -48,6 +49,7 @@ button {
     border-bottom: 2px solid var(--border-transparent);
     font-size: 2rem;
     align-self: flex-start;
+    box-sizing: border-box;
 }
 
 .spaced-text {

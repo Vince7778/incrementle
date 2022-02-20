@@ -1,18 +1,21 @@
-import { Currency, Wallet } from "./Wallet";
+import { Currency, Wallet } from "../Wallet";
 
 interface UpgradeOptions {
     name: string;
+    id: string;
     description: string;
     cost?: Wallet;
 }
 
 export class Upgrade {
     name: string;
+    id: string;
     description: string;
     cost: Wallet;
 
-    constructor({name, description, cost}: UpgradeOptions) {
+    constructor({name, id, description, cost}: UpgradeOptions) {
         this.name = name;
+        this.id = id;
         this.description = description;
         this.cost = cost || new Wallet();
     }
@@ -31,5 +34,12 @@ export class Upgrade {
             const cur = <Currency>ctype;
             w[cur] -= this.cost[cur];
         }
+    }
+
+    // Appends to the parent
+    display(parentElem: HTMLElement) {
+        const div = document.createElement("div");
+        div.innerHTML = `${this.name}: ${this.description}<br>Cost: ${this.cost.points} points`;
+        parentElem.appendChild(div);
     }
 }
