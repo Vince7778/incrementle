@@ -21,7 +21,7 @@ type GameOutcome = null | "win" | "loss";
 export class Wordle {
     parentElem?: HTMLElement;
     statusBar = document.createElement("p");
-    keyboard = new Keyboard();
+    keyboard: Keyboard;
 
     correctWord = ""; // will get set when constructed
     guesses: string[] = [];
@@ -41,6 +41,7 @@ export class Wordle {
         this.parentElem = parentElem;
         this.finishCallback = finishCallback;
         this.statusBar.className = "board-status";
+        this.keyboard = new Keyboard(this);
         this.resetGame();
     }
 

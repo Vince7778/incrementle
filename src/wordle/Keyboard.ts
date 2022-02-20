@@ -1,4 +1,5 @@
 import { GuessColor } from "./GuessColor";
+import { Wordle } from "./Wordle";
 
 const alphaSize = 26;
 const asciiA = 97;
@@ -6,7 +7,7 @@ const asciiA = 97;
 const layout = [
     "qwertyuiop",
     " asdfghjkl ",
-    "    zxcvbnm    "
+    "<zxcvbnm>"
 ];
 
 const toNumber = (s: string) => s.toLowerCase().charCodeAt(0) - asciiA;
@@ -14,8 +15,10 @@ const toLetter = (n: number) => String.fromCharCode(n + asciiA);
 
 export class Keyboard {
     colors: GuessColor[] = [];
+    wordle: Wordle;
 
-    constructor() {
+    constructor(wordle: Wordle) {
+        this.wordle = wordle;
         this.reset();
     }
 
@@ -39,20 +42,35 @@ export class Keyboard {
             divRow.className = "kb-row";
 
             for (let c = 0; c < layout[r].length; c++) {
-                const elem = document.createElement("div");
 
                 const letter = layout[r][c];
                 if (letter === " ") {
+                    const elem = document.createElement("div");
                     elem.className = `kb-letter kb-spacer`;
+                    divRow.appendChild(elem);
                 } else {
-                    const val = toNumber(letter);
-                    const color = this.colors[val];
-    
-                    elem.innerText = letter;
-                    elem.className = `kb-letter letter-${color}`;
+                    const elem = document.createElement("button");
+                    
+                    if (letter === "<") { // backspace
+                        elem.innerText = "Back";
+                        elem.className = `kb-letter letter-${GuessColor.Blank}`;
+                        elem.addEventListener("click", this.wordle.type.bind(this.wordle, "Backspace"));
+                    } else if (letter === ">") { // enter
+                        elem.innerText = "Enter";
+                        elem.className = `kb-letter letter-${GuessColor.Blank}`;
+                        elem.addEventListener("click", this.wordle.type.bind(this.wordle, "Enter"));
+                    } else {
+                        const val = toNumber(letter);
+                        const color = this.colors[val];
+        
+                        elem.innerText = letter.toUpperCase();
+                        elem.className = `kb-letter letter-${color}`;
+                        elem.addEventListener("click", this.wordle.type.bind(this.wordle, letter));
+                    }
+                    
+                    divRow.appendChild(elem);
                 }
 
-                divRow.appendChild(elem);
             }
 
             parentElem.appendChild(divRow);

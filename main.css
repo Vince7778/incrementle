@@ -21,6 +21,10 @@ html {
     height: 100%;
 }
 
+button {
+    all: unset;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -132,11 +136,12 @@ html {
 .kb-letter {
     width: 100%;
     font-size: 1.5rem;
-    text-transform: uppercase;
     margin: 3px;
     padding: 3px;
     border-radius: 5px;
     text-align: center;
+    cursor: pointer;
+    user-select: none;
 }
 
 .kb-spacer {
