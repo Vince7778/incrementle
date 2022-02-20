@@ -2,15 +2,14 @@ import { GuessColor } from "./wordle/GuessColor";
 import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
+import { Wallet } from "./Wallet";
 
 const pointValues = [0, 13, 8, 5, 3, 2, 1]; // based off fibonacci sequence
 
 export class Player {
-    gamesWon: number = 0;
-    gamesPlayed: number = 0;
-    currency = {
-        points: 0
-    }
+    gamesWon = 0;
+    gamesPlayed = 0;
+    currency = new Wallet();
 
     constructor() {}
 
