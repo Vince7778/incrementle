@@ -29,7 +29,7 @@ export class Upgrade {
     }
 
     // Doesn't check if it can be purchased.
-    buy(w: Wallet) {
+    spend(w: Wallet) {
         for (const ctype in this.cost) {
             const cur = <Currency>ctype;
             w[cur] -= this.cost[cur];
@@ -39,7 +39,8 @@ export class Upgrade {
     // Appends to the parent
     display(parentElem: HTMLElement) {
         const div = document.createElement("div");
-        div.innerHTML = `${this.name}: ${this.description}<br>Cost: ${this.cost.points} points`;
+        div.innerHTML = `${this.name}<br>${this.description}<br>Cost: ${this.cost.points} points`;
+        div.className = "upg-box";
         parentElem.appendChild(div);
     }
 }

@@ -150,3 +150,17 @@ button {
     visibility: none;
     flex: 0.5;
 }
+
+.upg-container {
+    text-align: center;
+    padding: 10px;
+}
+
+.upg-box {
+    border: 2px solid var(--border-transparent);
+    border-radius: 5px;
+}
+
+.upg-buyable {
+    cursor: pointer;
+}
