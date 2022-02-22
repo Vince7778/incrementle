@@ -3,9 +3,18 @@ import { checkGuess } from "./checkGuess";
 import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
+import { UpgradeManager } from "../upgrades/UpgradeManager";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
+
+function getGuessCount() {
+    let ret = defaultGuessCount;
+
+    if (UpgradeManager.bought("anotherguess")) ret++;
+
+    return ret;
+}
 
 const isLetter = (s: string) => /^[a-zA-Z]$/.test(s);
 
@@ -36,7 +45,7 @@ export class Wordle {
     finishCallback?: (wrd: Wordle) => void;
 
     constructor({parentElem, guessLength, maxGuessCount, finishCallback}: WordleOptions = {}) {
-        this.maxGuessCount = maxGuessCount || defaultGuessCount;
+        this.maxGuessCount = maxGuessCount || getGuessCount();
         this.guessLength = guessLength || defaultGuessLength;
         this.parentElem = parentElem;
         this.finishCallback = finishCallback;
@@ -47,7 +56,7 @@ export class Wordle {
 
     resetGame() {
         this.correctWord = getRandomAnswer();
-        console.log(this.correctWord);
+        console.log(this.correctWord); // debug print :)
         this.guesses = [];
         this.guessColors = [];
         this.gameOutcome = null;

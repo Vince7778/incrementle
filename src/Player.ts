@@ -4,8 +4,13 @@ import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
 import { Wallet } from "./Wallet";
 import { UpgradeManager } from "./upgrades/UpgradeManager";
+import { fibonacci } from "./Utils";
 
-const pointValues = [0, 13, 8, 5, 3, 2, 1]; // based off fibonacci sequence
+function calculatePoints(wordle: Wordle) {
+    const guessesLeft = wordle.maxGuessCount - wordle.guesses.length;
+    const fibn = fibonacci(guessesLeft+2);
+    return fibn;
+}
 
 export class Player {
     gamesWon = 0;
@@ -39,11 +44,9 @@ export class Player {
             }
 
             this.gamesWon++;
-            this.currency.points += pointValues[wrd.guesses.length];
+            this.currency.points += calculatePoints(wrd);
             
             this.displayCurrency();
         }
-
-        console.log(this);
     }
 }
