@@ -1,4 +1,5 @@
 import { Currency, PlayerWallet, WalletInstance } from "../Wallet";
+import { UpgradeManager } from "./UpgradeManager";
 
 interface UpgradeOptions {
     name: string;
@@ -28,8 +29,8 @@ export class Upgrade {
         return true;
     }
 
-    // Doesn't check if it can be purchased.
     spend(w: WalletInstance) {
+        if (!this.canBuy(w)) return;
         for (const ctype in this.cost) {
             const cur = <Currency>ctype;
             w.add(cur, -this.cost.get(cur));
@@ -44,6 +45,7 @@ export class Upgrade {
 
         if (this.canBuy(PlayerWallet)) {
             div.className += " upg-buyable";
+            div.addEventListener("click", () => UpgradeManager.buy(this.id));
         } else {
             div.className += " upg-unbuyable";
         }

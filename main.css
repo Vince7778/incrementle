@@ -160,6 +160,7 @@ button {
     border: 2px solid var(--border-transparent);
     border-radius: 5px;
     user-select: none;
+    line-height: 1.5;
 }
 
 .upg-buyable {

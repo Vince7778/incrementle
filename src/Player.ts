@@ -2,7 +2,7 @@ import { GuessColor } from "./wordle/GuessColor";
 import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
-import { PlayerWallet as wallet } from "./Wallet";
+import { PlayerWallet } from "./Wallet";
 import { UpgradeManager } from "./upgrades/UpgradeManager";
 import { fibonacci } from "./Utils";
 
@@ -16,7 +16,9 @@ export class Player {
     gamesWon = 0;
     gamesPlayed = 0;
 
-    constructor() {}
+    constructor() {
+        PlayerWallet.addListener(this.displayCurrency.bind(this));
+    }
 
     displayCurrency() {
         const div = document.createElement("div");
@@ -24,7 +26,7 @@ export class Player {
 
         const spans = [
             colorText(`Wins: ${this.gamesWon}`, "white"),
-            colorVarText(`Points: ${wallet.get("points")}`, "--letter-green-light")
+            colorVarText(`Points: ${PlayerWallet.get("points")}`, "--letter-green-light")
         ];
         div.replaceChildren(...spans);
 
@@ -43,7 +45,7 @@ export class Player {
             }
 
             this.gamesWon++;
-            wallet.add("points", calculatePoints(wrd));
+            PlayerWallet.add("points", calculatePoints(wrd));
             
             this.displayCurrency();
         }

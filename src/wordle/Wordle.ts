@@ -55,6 +55,8 @@ export class Wordle {
     }
 
     resetGame() {
+        this.maxGuessCount = getGuessCount();
+        
         this.correctWord = getRandomAnswer();
         console.log(this.correctWord); // debug print :)
         this.guesses = [];
