@@ -2,7 +2,7 @@ import { GuessColor } from "./wordle/GuessColor";
 import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
-import { Wallet } from "./Wallet";
+import { PlayerWallet as wallet } from "./Wallet";
 import { UpgradeManager } from "./upgrades/UpgradeManager";
 import { fibonacci } from "./Utils";
 
@@ -15,7 +15,6 @@ function calculatePoints(wordle: Wordle) {
 export class Player {
     gamesWon = 0;
     gamesPlayed = 0;
-    currency = new Wallet();
 
     constructor() {}
 
@@ -25,7 +24,7 @@ export class Player {
 
         const spans = [
             colorText(`Wins: ${this.gamesWon}`, "white"),
-            colorVarText(`Points: ${this.currency.points}`, "--letter-green-light")
+            colorVarText(`Points: ${wallet.get("points")}`, "--letter-green-light")
         ];
         div.replaceChildren(...spans);
 
@@ -44,7 +43,7 @@ export class Player {
             }
 
             this.gamesWon++;
-            this.currency.points += calculatePoints(wrd);
+            wallet.add("points", calculatePoints(wrd));
             
             this.displayCurrency();
         }
