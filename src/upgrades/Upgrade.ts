@@ -6,6 +6,7 @@ interface UpgradeOptions {
     id: string;
     description: string;
     cost?: WalletInstance;
+    prereqs?: string[];
 }
 
 export class Upgrade {
@@ -13,12 +14,14 @@ export class Upgrade {
     id: string;
     description: string;
     cost: WalletInstance;
+    prereqs: string[]; // List of ids of prerequisite upgrades
 
-    constructor({name, id, description, cost}: UpgradeOptions) {
+    constructor({name, id, description, cost, prereqs}: UpgradeOptions) {
         this.name = name;
         this.id = id;
         this.description = description;
-        this.cost = cost || new WalletInstance();
+        this.cost = cost ?? new WalletInstance();
+        this.prereqs = prereqs ?? [];
     }
 
     canBuy(w: WalletInstance) {

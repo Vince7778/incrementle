@@ -9,10 +9,13 @@ import { iota, shuffle } from "../Utils";
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
 
+const ASCII_A = 97;
+
 function getGuessCount() {
     let ret = defaultGuessCount;
 
     if (UpgradeManager.bought("anotherguess")) ret++;
+    if (UpgradeManager.bought("anotherguess2")) ret++;
 
     return ret;
 }
@@ -22,6 +25,15 @@ function getLetterHintCount() {
 
     if (UpgradeManager.bought("letterhint")) ret++;
     
+    return ret;
+}
+
+function getGrayHintCount() {
+    let ret = 0;
+
+    if (UpgradeManager.bought("threegrays")) ret += 3;
+    if (UpgradeManager.bought("threegrays2")) ret += 3;
+
     return ret;
 }
 
@@ -79,6 +91,7 @@ export class Wordle {
 
         this.keyboard.reset();
         this.addLetterHints();
+        this.addGrayHints();
 
         this.display();
     }
@@ -221,6 +234,20 @@ export class Wordle {
         for (let i = 0; i < num && i < this.guessLength; i++) {
             const hintLetter = this.correctWord[arr[i]];
             this.keyboard.setKey(hintLetter, GuessColor.Yellow);
+        }
+    }
+
+    addGrayHints() {
+        let num = getGrayHintCount();
+        let arr = iota(26); // alphabet size
+        shuffle(arr);
+        for (let i = 0; i < num && i < 26; i++) {
+            const curLetter = String.fromCharCode(arr[i]+ASCII_A);
+            if (this.correctWord.indexOf(curLetter) >= 0) {
+                num++; // skip letter
+                continue;
+            }
+            this.keyboard.setKey(curLetter, GuessColor.Gray);
         }
     }
 }

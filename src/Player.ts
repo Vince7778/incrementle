@@ -9,7 +9,14 @@ import { fibonacci } from "./Utils";
 function calculatePoints(wordle: Wordle) {
     const guessesLeft = wordle.maxGuessCount - wordle.guesses.length;
     const fibn = fibonacci(guessesLeft+2);
-    return fibn;
+    let ret = fibn;
+    
+    if (UpgradeManager.bought("greenmult")) {
+        const numGreen = wordle.countColor(GuessColor.Green);
+        ret *= numGreen/3;
+    }
+
+    return ret;
 }
 
 export class Player {
@@ -26,7 +33,7 @@ export class Player {
 
         const spans = [
             colorText(`Wins: ${this.gamesWon}`, "white"),
-            colorVarText(`Points: ${PlayerWallet.get("points")}`, "--letter-green-light")
+            colorVarText(`Points: ${parseFloat(PlayerWallet.get("points").toFixed(2))}`, "--letter-green-light")
         ];
         div.replaceChildren(...spans);
 

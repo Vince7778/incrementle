@@ -18,6 +18,7 @@ export const UpgradeManager = {
         upgradeDiv.className = "upg-container";
         upgradeList.forEach(u => {
             if (UpgradeManager.bought(u.id)) return;
+            if (u.prereqs.some(id => !UpgradeManager.bought(id))) return;
             u.display(upgradeDiv);
         });
         LeftPanel.setBody("upgrades", upgradeDiv);
