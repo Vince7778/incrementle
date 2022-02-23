@@ -188,6 +188,7 @@ export class Wordle {
         const newColors = checkGuess(this.tentativeGuess, this.correctWord);
         this.guessColors.push(newColors);
         for (let i = 0; i < this.tentativeGuess.length; i++) {
+            // FIXME: duplicate letters set to the wrong color
             this.keyboard.setKey(this.tentativeGuess[i], newColors[i]);
         }
 
