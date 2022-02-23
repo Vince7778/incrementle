@@ -5,6 +5,7 @@ import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
 import { UpgradeManager } from "../upgrades/UpgradeManager";
 import { iota, shuffle } from "../Utils";
+import { Upgrade } from "../upgrades/Upgrade";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
@@ -16,6 +17,7 @@ function getGuessCount() {
 
     if (UpgradeManager.bought("anotherguess")) ret++;
     if (UpgradeManager.bought("anotherguess2")) ret++;
+    if (UpgradeManager.bought("anotherguess3")) ret++;
 
     return ret;
 }
@@ -177,7 +179,7 @@ export class Wordle {
         }
 
         if (this.tentativeGuess.length < this.guessLength) return;
-        if (!isValidWord(this.tentativeGuess)) {
+        if (!isValidWord(this.tentativeGuess) && !this.shouldIgnoreWord()) {
             this.setStatus("Invalid word");
             return;
         }
@@ -249,5 +251,11 @@ export class Wordle {
             }
             this.keyboard.setKey(curLetter, GuessColor.Gray);
         }
+    }
+
+    shouldIgnoreWord() {
+        if (this.guesses.length === this.maxGuessCount-2 && UpgradeManager.bought("ignoreword")) return true;
+        if (this.guesses.length === 0 && UpgradeManager.bought("ignorefirst")) return true;
+        return false;
     }
 }

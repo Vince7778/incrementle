@@ -43,5 +43,26 @@ export const upgradeList = [
         description: "Grays out three more letters.",
         cost: new WalletInstance({ points: 24 }),
         prereqs: ["threegrays"]
+    }),
+    new Upgrade({
+        name: "Similar Word Killer",
+        id: "ignoreword",
+        description: "The second to last guess can be anything, not just English words.",
+        cost: new WalletInstance({ points: 30 }),
+        prereqs: ["threegrays"]
+    }),
+    new Upgrade({
+        name: "Yet Another Guess",
+        id: "anotherguess3",
+        description: "I wonder what this does?",
+        cost: new WalletInstance({ points: 20 }),
+        prereqs: ["threegrays2", "ignoreword"]
+    }),
+    new Upgrade({
+        name: "First Word Allower",
+        id: "ignorefirst",
+        description: "The first guess can be anything, not just English words.",
+        cost: new WalletInstance({ points: 50 }),
+        prereqs: ["ignoreword"]
     })
 ].sort((a, b) => a.cost.get("points") - b.cost.get("points"));
