@@ -1,8 +1,6 @@
 
-import { Player } from "./Player";
+import { curPlayer } from "./Player";
 import { Wordle } from "./wordle/Wordle";
-
-const curPlayer = new Player();
 
 const curWordle = new Wordle({
     parentElem: document.getElementById("main-board")!,

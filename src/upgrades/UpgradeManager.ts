@@ -31,6 +31,13 @@ export const UpgradeManager = {
         upg.spend(PlayerWallet);
         upgrades.push(id);
         UpgradeManager.display();
+    },
+    save: () => {
+        return upgrades;
+    },
+    load: (v: string[]) => {
+        upgrades = v;
+        UpgradeManager.display();
     }
 }
 

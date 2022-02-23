@@ -19,6 +19,11 @@ function calculatePoints(wordle: Wordle) {
     return ret;
 }
 
+export interface PlayerSave {
+    gamesWon: number;
+    gamesPlayed: number;
+}
+
 export class Player {
     gamesWon = 0;
     gamesPlayed = 0;
@@ -57,4 +62,19 @@ export class Player {
             this.displayCurrency();
         }
     }
+
+    save() {
+        return {
+            gamesWon: this.gamesWon,
+            gamesPlayed: this.gamesPlayed
+        };
+    }
+
+    load(v: PlayerSave) {
+        this.gamesWon = v.gamesWon;
+        this.gamesPlayed = v.gamesPlayed;
+        this.displayCurrency();
+    }
 }
+
+export const curPlayer = new Player();

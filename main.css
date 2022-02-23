@@ -172,3 +172,13 @@ button {
     cursor: not-allowed;
     color: var(--letter-gray);
 }
+
+.panel-button {
+    margin: 3px;
+    padding: 3px;
+    border-radius: 5px;
+    border: 2px solid var(--border-transparent);
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}

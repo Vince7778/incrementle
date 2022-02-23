@@ -18,6 +18,14 @@ export class WalletInstance {
     multiply(cur: Currency, amount: number) {
         this[cur] *= amount;
     }
+    save() {
+        return {
+            points: this.get("points")
+        };
+    }
+    load(opt: { [cur in Currency]?: number }) {
+        this.points = opt.points || 0;
+    }
 }
 
 type WalletListener = (wallet: ListenableWallet) => void;
