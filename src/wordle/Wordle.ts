@@ -4,6 +4,7 @@ import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
 import { UpgradeManager } from "../upgrades/UpgradeManager";
+import { iota, shuffle } from "../Utils";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
@@ -13,6 +14,14 @@ function getGuessCount() {
 
     if (UpgradeManager.bought("anotherguess")) ret++;
 
+    return ret;
+}
+
+function getLetterHintCount() {
+    let ret = 0;
+
+    if (UpgradeManager.bought("letterhint")) ret++;
+    
     return ret;
 }
 
@@ -59,6 +68,7 @@ export class Wordle {
         
         this.correctWord = getRandomAnswer();
         console.log(this.correctWord); // debug print :)
+
         this.guesses = [];
         this.guessColors = [];
         this.gameOutcome = null;
@@ -66,7 +76,10 @@ export class Wordle {
         this.tentativeGuess = "";
 
         this.setStatus("");
+
         this.keyboard.reset();
+        this.addLetterHints();
+
         this.display();
     }
 
@@ -198,5 +211,16 @@ export class Wordle {
         return this.guessColors.reduce((v: number, cur: GuessColor[]) => {
             return v+cur.filter(c => c === color).length;
         }, 0);
+    }
+
+    // FIXME: This does not take into account duplicate letters correctly.
+    addLetterHints() {
+        const num = getLetterHintCount();
+        let arr = iota(this.guessLength);
+        shuffle(arr);
+        for (let i = 0; i < num && i < this.guessLength; i++) {
+            const hintLetter = this.correctWord[arr[i]];
+            this.keyboard.setKey(hintLetter, GuessColor.Yellow);
+        }
     }
 }

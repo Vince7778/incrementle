@@ -7,5 +7,11 @@ export const upgradeList = [
         id: "anotherguess",
         description: "You get one more guess. This scales point gain too.",
         cost: new WalletInstance({ points: 3 })
+    }),
+    new Upgrade({
+        name: "Letter Hint",
+        id: "letterhint",
+        description: "A single letter is hinted in yellow on the keyboard.",
+        cost: new WalletInstance({ points: 6 })
     })
 ];

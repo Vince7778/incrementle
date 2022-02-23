@@ -10,3 +10,21 @@ export function fibonacci(n: number) {
     }
     return b;
 }
+
+// Shuffles in place on arr
+export function shuffle(arr: any[]) {
+    let cur = arr.length, rand = -1;
+
+    while (cur != 0) {
+        rand = Math.floor(Math.random() * cur);
+        cur--;
+        [arr[cur], arr[rand]] = [arr[rand], arr[cur]];
+    }
+}
+
+// Generates array of integers in [x, x+n) with step s
+export function iota(n: number, x = 0, s = 1) {
+    let arr = [];
+    for (let i = 0; i < n; i++) arr.push(x+i*s);
+    return arr;
+}
