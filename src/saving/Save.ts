@@ -8,7 +8,7 @@ const AUTOSAVE_INTERVAL = 15000; // 15 seconds
 const STATUS_TIME = 1500; // time status is displayed
 let displayed = false; // need to know if div has been created
 let status = "";
-let statusClearTimeout: number;
+let statusClearTimeout: number | null;
 
 interface SaveType {
     player: PlayerSave;
@@ -30,9 +30,7 @@ export const Save = {
         localStorage.setItem("save", JSON.stringify(ret));
 
         if (!isAutosave) {
-            Save.setStatus("Saved");
-            if (statusClearTimeout) clearTimeout(statusClearTimeout);
-            statusClearTimeout = setTimeout(() => Save.setStatus(""), STATUS_TIME);
+            Save.setStatus("Saved", true);
         }
     },
     getSaveJSON() {
@@ -43,6 +41,7 @@ export const Save = {
             // TODO: add wordle saving
         }
     },
+
     load(isAutoload=false) {
         const val = localStorage.getItem("save");
         if (!val) return;
@@ -60,11 +59,36 @@ export const Save = {
         curWordle.resetGame();
 
         if (!isAutoload) {
-            Save.setStatus("Loaded");
-            if (statusClearTimeout) clearTimeout(statusClearTimeout);
-            statusClearTimeout = setTimeout(() => Save.setStatus(""), STATUS_TIME);
+            Save.setStatus("Loaded", true);
         }
     },
+
+    import() {
+        const resp = prompt("Paste your import code here:", "");
+        if (!resp) {
+            Save.setStatus("Cancelled import", true);
+            return;
+        }
+
+        let json: SaveType;
+        try {
+            const conv = atob(resp);
+            json = JSON.parse(conv);
+        } catch (err) {
+            Save.setStatus("Invalid import", true);
+            return;
+        }
+
+        Save.loadFromJSON(json);
+    },
+
+    export() {
+        const json = Save.getSaveJSON();
+        const base64 = btoa(JSON.stringify(json));
+        navigator.clipboard.writeText(base64);
+        Save.setStatus("Copied to clipboard", true, 3*STATUS_TIME); // longer duration to make sure they see
+    },
+
     display() {
         const div = document.createElement("div");
         div.className = "panel-container";
@@ -79,19 +103,35 @@ export const Save = {
             Save.load();
         });
 
+        const buttonImport = createPanelButton("Import", e => {
+            Save.import();
+        });
+
+        const buttonExport = createPanelButton("Export", e => {
+            Save.export();
+        });
+
         const statusArea = document.createElement("p");
         statusArea.id = "save-status";
         statusArea.innerText = status;
 
-        div.append(buttonSave, buttonLoad, statusArea);
+        div.append(buttonSave, buttonLoad, buttonImport, buttonExport, statusArea);
         LeftPanel.setBody("save", div);
 
         displayed = true;
     },
-    setStatus(str: string) {
+    setStatus(str: string, doClear=false, clearDuration=STATUS_TIME) {
         if (!displayed) Save.display();
         status = str;
         document.getElementById("save-status")!.innerText = str;
+
+        if (doClear) {
+            if (statusClearTimeout) clearTimeout(statusClearTimeout);
+            statusClearTimeout = setTimeout(() => {
+                Save.setStatus("");
+                statusClearTimeout = null;
+            }, STATUS_TIME);
+        }
     }
 }
 
