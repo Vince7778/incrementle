@@ -7,11 +7,13 @@ import { UpgradeManager } from "../upgrades/UpgradeManager";
 import { fmat, iota, shuffle } from "../Utils";
 import { Upgrade } from "../upgrades/Upgrade";
 import { curPlayer } from "../Player";
-import { calculatePointsIfDone } from "../calculatePoints";
+import { calculatePoints, calculatePointsIfDone } from "../calculatePoints";
 import { LeftPanel } from "../LeftPanel";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
+
+const DISPLAY_INTERVAL = 100;
 
 const ASCII_A = 97;
 
@@ -56,6 +58,7 @@ type GameOutcome = null | "win" | "loss";
 export class Wordle {
     parentElem?: HTMLElement;
     statusBar = document.createElement("p");
+    gameInfo = document.createElement("div");
     keyboard: Keyboard;
 
     correctWord = ""; // will get set when constructed
@@ -69,6 +72,9 @@ export class Wordle {
     guessLength: number;
 
     finishCallback?: (wrd: Wordle) => void;
+
+    startTime: Date | null = null;
+    endTime: Date | null = null;
 
     constructor({parentElem, guessLength, maxGuessCount, finishCallback}: WordleOptions = {}) {
         this.maxGuessCount = maxGuessCount || getGuessCount();
@@ -94,6 +100,9 @@ export class Wordle {
 
         this.tentativeGuess = "";
 
+        this.startTime = null;
+        this.endTime = null;
+
         this.setStatus("");
 
         this.keyboard.reset();
@@ -101,6 +110,7 @@ export class Wordle {
         this.addGrayHints();
 
         this.display();
+        setInterval(this.showGameInfo.bind(this), DISPLAY_INTERVAL);
     }
 
     display() {
@@ -108,18 +118,8 @@ export class Wordle {
         const board = document.createElement("div");
         board.className = "board";
 
-        const gameInfo = document.createElement("div");
-        if (!this.gameOutcome && LeftPanel.shown) {
-            gameInfo.innerHTML += `+${fmat(calculatePointsIfDone(this))} if win`;
-        }
-        if (UpgradeManager.bought("doublewarn")) {
-            if (hasDoubleLetter(this.correctWord)) {
-                gameInfo.innerHTML += "<br>Contains double letter";
-            } else {
-                gameInfo.innerHTML += "<br>No double letters";
-            }
-        }
-        board.appendChild(gameInfo);
+        this.showGameInfo();
+        board.appendChild(this.gameInfo);
 
         for (let i = 0; i < this.maxGuessCount; i++) {
             const row = document.createElement("div");
@@ -180,15 +180,45 @@ export class Wordle {
         this.statusBar.innerText = str;
     }
 
+    showGameInfo() {
+        if (!LeftPanel.shown) return;
+        this.gameInfo.innerHTML = "";
+        if (this.gameOutcome === "win") {
+            this.gameInfo.innerHTML = `+${calculatePoints(this).toFixed(2)} points`;
+        } else if (!this.gameOutcome) {
+            this.gameInfo.innerHTML = `+${calculatePointsIfDone(this).toFixed(2)} points if win`;
+        }
+        if (UpgradeManager.bought("doublewarn")) {
+            if (hasDoubleLetter(this.correctWord)) {
+                this.gameInfo.innerHTML += "<br>Contains double letter";
+            } else {
+                this.gameInfo.innerHTML += "<br>No double letters";
+            }
+        }
+        if (UpgradeManager.bought("timebonus")) {
+            if (this.startTime === null) {
+                this.gameInfo.innerHTML += `<br>Time elapsed: 0s`;
+            } else if (this.endTime !== null) {
+                const timeElapsed = this.endTime.getTime() - this.startTime.getTime();
+                this.gameInfo.innerHTML += `<br>Time elapsed: ${(timeElapsed/1000).toFixed(2)}s`;
+            } else {
+                const timeElapsed = new Date().getTime() - this.startTime.getTime();
+                this.gameInfo.innerHTML += `<br>Time elapsed: ${(timeElapsed/1000).toFixed(2)}s`;
+            }
+        }
+    }
+
     checkEndGame() {
         if (this.tentativeGuess === this.correctWord) {
             this.gameOutcome = "win";
             this.setStatus("You won!");
             if (this.finishCallback) this.finishCallback(this);
+            this.endTime = new Date();
         } else if (this.guesses.length === this.maxGuessCount) {
             this.gameOutcome = "loss";
             this.setStatus(`You lost! Answer: ${this.correctWord}`);
             if (this.finishCallback) this.finishCallback(this);
+            this.endTime = new Date();
         }
     }
 
@@ -202,7 +232,11 @@ export class Wordle {
             this.setStatus("Invalid word");
             return;
         }
+
         this.guesses.push(this.tentativeGuess);
+        if (this.guesses.length === 1) {
+            this.startTime = new Date();
+        }
 
         const newColors = checkGuess(this.tentativeGuess, this.correctWord);
         this.guessColors.push(newColors);

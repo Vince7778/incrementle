@@ -66,10 +66,17 @@ export const upgradeList = [
         prereqs: ["threegrays2"]
     }),
     new Upgrade({
+        name: "Time Bonus",
+        id: "timebonus",
+        description: "Gives you a bonus if you solve the wordle fast. Formula: max(1, log10(1000/seconds))",
+        cost: new WalletInstance({ points: 40 }),
+        prereqs: ["doublewarn"]
+    }),
+    new Upgrade({
         name: "First Word Allower",
         id: "ignorefirst",
         description: "The first guess can be anything, not just English words.",
-        cost: new WalletInstance({ points: 40 }),
+        cost: new WalletInstance({ points: 50 }),
         prereqs: ["ignoreword"]
     })
 ].sort((a, b) => a.cost.get("points") - b.cost.get("points"));
