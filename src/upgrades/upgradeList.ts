@@ -41,7 +41,7 @@ export const upgradeList = [
         name: "Three More Grays",
         id: "threegrays2",
         description: "Grays out three more letters.",
-        cost: new WalletInstance({ points: 24 }),
+        cost: new WalletInstance({ points: 20 }),
         prereqs: ["threegrays"]
     }),
     new Upgrade({
@@ -57,6 +57,13 @@ export const upgradeList = [
         description: "I wonder what this does?",
         cost: new WalletInstance({ points: 20 }),
         prereqs: ["threegrays2", "ignoreword"]
+    }),
+    new Upgrade({
+        name: "Double Letter Warner",
+        id: "doublewarn",
+        description: "Warns you if there are two (or more) of the same letter in the word.",
+        cost: new WalletInstance({ points: 30 }),
+        prereqs: ["threegrays2"]
     }),
     new Upgrade({
         name: "First Word Allower",

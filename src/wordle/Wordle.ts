@@ -1,6 +1,6 @@
 
 import { checkGuess } from "./checkGuess";
-import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
+import { getRandomAnswer, getRandomWord, hasDoubleLetter, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
 import { UpgradeManager } from "../upgrades/UpgradeManager";
@@ -110,7 +110,14 @@ export class Wordle {
 
         const gameInfo = document.createElement("div");
         if (!this.gameOutcome && LeftPanel.shown) {
-            gameInfo.innerText += `+${fmat(calculatePointsIfDone(this))} if win`;
+            gameInfo.innerHTML += `+${fmat(calculatePointsIfDone(this))} if win`;
+        }
+        if (UpgradeManager.bought("doublewarn")) {
+            if (hasDoubleLetter(this.correctWord)) {
+                gameInfo.innerHTML += "<br>Contains double letter";
+            } else {
+                gameInfo.innerHTML += "<br>No double letters";
+            }
         }
         board.appendChild(gameInfo);
 

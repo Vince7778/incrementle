@@ -21,3 +21,13 @@ export function getRandomAnswer() {
 export function isValidWord(w: string) {
     return answerList.indexOf(w) >= 0 || wordList.indexOf(w) >= 0;
 }
+
+// could be optimized. whatever
+export function hasDoubleLetter(w: string) {
+    for (let i = 0; i < w.length; i++) {
+        for (let j = i+1; j < w.length; j++) {
+            if (w[i] === w[j]) return true;
+        }
+    }
+    return false;
+}
