@@ -48,7 +48,7 @@ export const upgradeList = [
         name: "Similar Word Killer",
         id: "ignoreword",
         description: "The second to last guess can be anything, not just English words.",
-        cost: new WalletInstance({ points: 30 }),
+        cost: new WalletInstance({ points: 20 }),
         prereqs: ["threegrays"]
     }),
     new Upgrade({
@@ -62,7 +62,7 @@ export const upgradeList = [
         name: "First Word Allower",
         id: "ignorefirst",
         description: "The first guess can be anything, not just English words.",
-        cost: new WalletInstance({ points: 50 }),
+        cost: new WalletInstance({ points: 40 }),
         prereqs: ["ignoreword"]
     })
 ].sort((a, b) => a.cost.get("points") - b.cost.get("points"));

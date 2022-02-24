@@ -9,7 +9,9 @@ let usedIDs: string[] = [];
 export const LeftPanel = {
     show: () => {
         PANEL_ELEMENT.style.display = "flex";
+        LeftPanel.shown = true;
     },
+    shown: false,
     setHeader: (...children: HTMLElement[]) => {
         HEADER_ELEMENT.replaceChildren(...children);
     },

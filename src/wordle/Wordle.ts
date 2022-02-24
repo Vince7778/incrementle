@@ -4,9 +4,11 @@ import { getRandomAnswer, getRandomWord, isValidWord } from "./wordFuncs";
 import { GuessColor } from "./GuessColor";
 import { Keyboard } from "./Keyboard";
 import { UpgradeManager } from "../upgrades/UpgradeManager";
-import { iota, shuffle } from "../Utils";
+import { fmat, iota, shuffle } from "../Utils";
 import { Upgrade } from "../upgrades/Upgrade";
 import { curPlayer } from "../Player";
+import { calculatePointsIfDone } from "../calculatePoints";
+import { LeftPanel } from "../LeftPanel";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
@@ -82,7 +84,9 @@ export class Wordle {
         this.maxGuessCount = getGuessCount();
         
         this.correctWord = getRandomAnswer();
-        console.log(this.correctWord); // debug print :)
+        if (window.location.href !== "https://vince7778.github.io/incrementle/") {
+            console.log(this.correctWord); // debug print :)
+        }
 
         this.guesses = [];
         this.guessColors = [];
@@ -103,6 +107,12 @@ export class Wordle {
         if (!this.parentElem) return;
         const board = document.createElement("div");
         board.className = "board";
+
+        const gameInfo = document.createElement("div");
+        if (!this.gameOutcome && LeftPanel.shown) {
+            gameInfo.innerText += `+${fmat(calculatePointsIfDone(this))} if win`;
+        }
+        board.appendChild(gameInfo);
 
         for (let i = 0; i < this.maxGuessCount; i++) {
             const row = document.createElement("div");

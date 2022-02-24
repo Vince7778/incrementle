@@ -75,6 +75,7 @@ button {
 .board {
     display: grid;
     gap: 5px;
+    text-align: center;
 }
 
 .board-status {

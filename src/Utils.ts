@@ -28,3 +28,8 @@ export function iota(n: number, x = 0, s = 1) {
     for (let i = 0; i < n; i++) arr.push(x+i*s);
     return arr;
 }
+
+// Formats numbers with toFixed and parseFloat
+export function fmat(n: number, digits=2) {
+    return parseFloat(n.toFixed(digits));
+}
