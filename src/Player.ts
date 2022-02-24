@@ -1,23 +1,9 @@
-import { GuessColor } from "./wordle/GuessColor";
 import { Wordle } from "./wordle/Wordle";
 import { LeftPanel } from "./LeftPanel";
 import { colorText, colorVarText } from "./colorText";
 import { PlayerWallet } from "./Wallet";
 import { UpgradeManager } from "./upgrades/UpgradeManager";
-import { fibonacci } from "./Utils";
-
-function calculatePoints(wordle: Wordle) {
-    const guessesLeft = wordle.maxGuessCount - wordle.guesses.length;
-    const fibn = fibonacci(guessesLeft+2);
-    let ret = fibn;
-    
-    if (UpgradeManager.bought("greenmult")) {
-        const numGreen = wordle.countColor(GuessColor.Green);
-        ret *= numGreen/3;
-    }
-
-    return ret;
-}
+import { calculatePoints } from "./calculatePoints";
 
 export interface PlayerSave {
     gamesWon: number;
