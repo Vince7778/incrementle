@@ -92,6 +92,10 @@ button {
     margin: 0 40px;
 }
 
+.board-ignoreword {
+    --border-transparent: #75ff5267;
+}
+
 .board-letter {
     display: inline-flex;
     width: 60px;

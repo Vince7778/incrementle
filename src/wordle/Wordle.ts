@@ -124,6 +124,7 @@ export class Wordle {
         for (let i = 0; i < this.maxGuessCount; i++) {
             const row = document.createElement("div");
             row.className = "board-row";
+            if (this.shouldIgnoreWord(i)) row.className += " board-ignoreword";
 
             if (i < this.guesses.length) {
                 const curGuess = this.guesses[i];
@@ -272,9 +273,9 @@ export class Wordle {
         }
     }
 
-    shouldIgnoreWord() {
-        if (this.guesses.length === this.maxGuessCount-2 && UpgradeManager.bought("ignoreword")) return true;
-        if (this.guesses.length === 0 && UpgradeManager.bought("ignorefirst")) return true;
+    shouldIgnoreWord(ind=this.guesses.length) {
+        if (ind === this.maxGuessCount-2 && UpgradeManager.bought("ignoreword")) return true;
+        if (ind === 0 && UpgradeManager.bought("ignorefirst")) return true;
         return false;
     }
 }
