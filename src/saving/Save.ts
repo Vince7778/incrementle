@@ -16,14 +16,17 @@ interface SaveType {
     upgrades: string[];
 }
 
+function createPanelButton(text: string, callback: (e: MouseEvent) => void) {
+    const button = document.createElement("button");
+    button.className = "panel-button";
+    button.addEventListener("click", callback);
+    button.innerText = text;
+    return button;
+}
+
 export const Save = {
     save(isAutosave=false) {
-        const ret = {
-            player: curPlayer.save(),
-            wallet: PlayerWallet.save(),
-            upgrades: UpgradeManager.save(),
-            // TODO: add wordle saving
-        }
+        const ret = Save.getSaveJSON();
         localStorage.setItem("save", JSON.stringify(ret));
 
         if (!isAutosave) {
@@ -32,21 +35,35 @@ export const Save = {
             statusClearTimeout = setTimeout(() => Save.setStatus(""), STATUS_TIME);
         }
     },
-    load() {
+    getSaveJSON() {
+        return {
+            player: curPlayer.save(),
+            wallet: PlayerWallet.save(),
+            upgrades: UpgradeManager.save(),
+            // TODO: add wordle saving
+        }
+    },
+    load(isAutoload=false) {
         const val = localStorage.getItem("save");
         if (!val) return;
         const casted = JSON.parse(val) as SaveType;
         if (!casted) return;
+        Save.loadFromJSON(casted, isAutoload);
+    },
+    loadFromJSON(json: SaveType, isAutoload=false) {
+        PlayerWallet.load(json.wallet); // load wallet before player
+        curPlayer.load(json.player);
+        UpgradeManager.load(json.upgrades);
 
-        PlayerWallet.load(casted.wallet); // load wallet before player
-        curPlayer.load(casted.player);
-        UpgradeManager.load(casted.upgrades);
+        if (json.player.gamesWon > 0) LeftPanel.show();
 
         curWordle.resetGame();
 
-        Save.setStatus("Loaded");
-        if (statusClearTimeout) clearTimeout(statusClearTimeout);
-        statusClearTimeout = setTimeout(() => Save.setStatus(""), STATUS_TIME);
+        if (!isAutoload) {
+            Save.setStatus("Loaded");
+            if (statusClearTimeout) clearTimeout(statusClearTimeout);
+            statusClearTimeout = setTimeout(() => Save.setStatus(""), STATUS_TIME);
+        }
     },
     display() {
         const div = document.createElement("div");
@@ -54,19 +71,13 @@ export const Save = {
 
         div.innerHTML = "<h3>Save / Load</h3>"
 
-        const buttonSave = document.createElement("button");
-        buttonSave.className = "panel-button";
-        buttonSave.addEventListener("click", e => {
+        const buttonSave = createPanelButton("Save", e => {
             Save.save();
         });
-        buttonSave.innerText = "Save";
 
-        const buttonLoad = document.createElement("button");
-        buttonLoad.className = "panel-button";
-        buttonLoad.addEventListener("click", e => {
+        const buttonLoad = createPanelButton("Load", e => {
             Save.load();
         });
-        buttonLoad.innerText = "Load";
 
         const statusArea = document.createElement("p");
         statusArea.id = "save-status";
@@ -86,4 +97,4 @@ export const Save = {
 
 setInterval(Save.save, AUTOSAVE_INTERVAL, true);
 Save.display();
-Save.load();
+Save.load(true);
