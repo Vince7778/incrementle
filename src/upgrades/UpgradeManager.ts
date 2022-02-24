@@ -15,7 +15,7 @@ export const UpgradeManager = {
     display: () => {
         const upgradeDiv = document.createElement("div");
         upgradeDiv.innerHTML = "<h3>Upgrades</h3>";
-        upgradeDiv.className = "upg-container";
+        upgradeDiv.className = "panel-container";
         upgradeList.forEach(u => {
             if (UpgradeManager.bought(u.id)) return;
             if (u.prereqs.some(id => !UpgradeManager.bought(id))) return;

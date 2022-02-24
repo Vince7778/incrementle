@@ -151,7 +151,7 @@ button {
     flex: 0.5;
 }
 
-.upg-container {
+.panel-container {
     text-align: center;
     padding: 10px;
 }
@@ -181,4 +181,12 @@ button {
     text-align: center;
     cursor: pointer;
     user-select: none;
+}
+
+.panel-button:hover {
+    background-color: #555555;
+}
+
+.panel-button:active {
+    background-color: #222222;
 }

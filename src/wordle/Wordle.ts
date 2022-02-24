@@ -6,6 +6,7 @@ import { Keyboard } from "./Keyboard";
 import { UpgradeManager } from "../upgrades/UpgradeManager";
 import { iota, shuffle } from "../Utils";
 import { Upgrade } from "../upgrades/Upgrade";
+import { curPlayer } from "../Player";
 
 const defaultGuessCount = 4;
 const defaultGuessLength = 5;
@@ -260,3 +261,12 @@ export class Wordle {
         return false;
     }
 }
+
+export const curWordle = new Wordle({
+    parentElem: document.getElementById("main-board")!,
+    finishCallback: curPlayer.endGame.bind(curPlayer)
+});
+
+document.addEventListener("keydown", e => {
+    curWordle.type(e.key);
+});
