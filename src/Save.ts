@@ -1,8 +1,8 @@
-import { LeftPanel } from "../LeftPanel";
-import { curPlayer, PlayerSave } from "../Player"
-import { UpgradeManager } from "../upgrades/UpgradeManager"
-import { Currency, PlayerWallet } from "../Wallet"
-import { curWordle } from "../wordle/Wordle";
+import { LeftPanel } from "./LeftPanel";
+import { curPlayer, PlayerSave } from "./Player"
+import { UpgradeManager } from "./upgrades/UpgradeManager"
+import { Currency, PlayerWallet } from "./Wallet"
+import { curWordle } from "./wordle/Wordle";
 
 const AUTOSAVE_INTERVAL = 15000; // 15 seconds
 const STATUS_TIME = 1500; // time status is displayed
